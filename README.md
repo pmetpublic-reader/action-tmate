@@ -2,7 +2,7 @@
 
 This GitHub Action uses tmate.io to notify you within seconds of a build failure in Slack and provides a secret SSH url to connect to the runner to debug what happened. You can further protect it using your public ssh authorized_keys.
 
-**Note: tmate.io appears to have an initial connect timeout and a inactivity timeout. If either of those preclude this option, you can alos hose your own tmate ssh server.**
+**Note: tmate.io appears to have an initial connect timeout and a inactivity timeout. If either of those preclude this option, you can also host your own tmate ssh server.**
 
 ## Features
 
@@ -14,7 +14,7 @@ This GitHub Action uses tmate.io to notify you within seconds of a build failure
 
 - `Linux`
 - `macOS`
-- (`Window` is **not** supported. It will be skipped so that the Pipeline does not fail)
+- (`Window` is **not** supported)
 
 ## Getting Started
 
