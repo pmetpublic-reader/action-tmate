@@ -15,12 +15,13 @@ const execShellCommand = (cmd) => {
 
     process.on('exit', (code) => {
       if (code !== 0) {
-        reject(new Error(code ? code.toString() : undefined))
+        reject(new Error(code))
       }
       resolve(stdout)
     })
   }).catch(function (e) {
-    console.log("Promise rejected: " + e)
+    console.log("Promise rejected.")
+    console.error(e)
   })
 }
 
