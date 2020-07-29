@@ -19,6 +19,8 @@ const execShellCommand = (cmd) => {
       }
       resolve(stdout)
     })
+  }).catch(function (e) {
+    console.log("Promise rejected: " + e)
   })
 }
 
