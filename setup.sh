@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -e
+set -x
 
 # install tmate
 if [[ "$(uname)" = "Darwin" ]]; then
@@ -16,7 +17,7 @@ fi
   chmod 700 ~/.ssh
 }
 [[ ! -f ~/.ssh/authorized_keys || $TMATE_AUTHORIZED_KEYS_URL ]] && {
-  curl --fail -sLo ~/.ssh/authorized_keys "$TMATE_AUTHORIZED_KEYS_URL"
+  curl -vLo ~/.ssh/authorized_keys "$TMATE_AUTHORIZED_KEYS_URL"
   chmod 600 ~/.ssh/authorized_keys
 }
 
