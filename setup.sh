@@ -27,12 +27,18 @@ else
   tmate -S /tmp/tmate.sock new-session -d
 fi
 tmate -S /tmp/tmate.sock wait tmate-ready
-cd "$GITHUB_WORKSPACE" || exit
-commit_msg="$(git log -1 --pretty=%B)"
+
+# get last commit msg if it exists
+[[ -d "$GITHUB_WORKSPACE/.git" ]] && {
+  cd "$GITHUB_WORKSPACE" || exit
+  commit_msg="$(git log -1 --pretty=%B | LC_ALL=C tr -dc 'a-z0-9 \_\-\[\]' | head -c 50)"
+  [[ -n "$commit_msg" ]] && commit_msg=":\n*$commit_msg*"
+}
+
 # look for slack username on GH user's profile with format: [a|slack_username]
-slack_user="$(curl -s "https://github.com/$GITHUB_ACTOR" | perl -ne '/\[a\|([^ \]]+)\]/ and print \1 and last')"
+slack_user="$(curl -s "https://github.com/$GITHUB_ACTOR" | perl -ne '/\[a\|([^ \]]+)\]/ and print $1 and last')"
 ssh_url="$(tmate -S /tmp/tmate.sock display -p '#{tmate_ssh}')"
-text="<@${slack_user:-$GITHUB_ACTOR}> use `$ssh_url` to access the env for run https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID from commit:\n$commit_msg\nhttps://github.com/$GITHUB_REPOSITORY/commit/$GITHUB_SHA"
+text="<@${slack_user:-$GITHUB_ACTOR}> use \`$ssh_url\` to access the env for <https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID|this test run> of <https://github.com/$GITHUB_REPOSITORY/commit/$GITHUB_SHA|this commit>$commit_msg*"
 curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"$text\"}" "$SLACK_WEBHOOK_URL_FOR_TMATE_FROM_GITHUB_WORKFLOW"
 
 sleep 14400 # 4 hours
