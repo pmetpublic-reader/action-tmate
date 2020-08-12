@@ -27,7 +27,12 @@ else
   tmate -S /tmp/tmate.sock new-session -d
 fi
 tmate -S /tmp/tmate.sock wait tmate-ready
+cd "$GITHUB_WORKSPACE" || exit
+commit_msg="$(git log -1 --pretty=%B)"
+# look for slack username on GH user's profile with format: [a|slack_username]
+slack_user="$(curl -s "https://github.com/$GITHUB_ACTOR" | perl -ne '/\[a\|([^ \]]+)\]/ and print \1 and last')"
 ssh_url="$(tmate -S /tmp/tmate.sock display -p '#{tmate_ssh}')"
-curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"$ssh_url\"}" "$SLACK_WEBHOOK_URL_FOR_TMATE_FROM_GITHUB_WORKFLOW"
+text="<@${slack_user:-$GITHUB_ACTOR}> use `$ssh_url` to access the env for run https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID from commit:\n$commit_msg\nhttps://github.com/$GITHUB_REPOSITORY/commit/$GITHUB_SHA"
+curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"$text\"}" "$SLACK_WEBHOOK_URL_FOR_TMATE_FROM_GITHUB_WORKFLOW"
 
 sleep 14400 # 4 hours
