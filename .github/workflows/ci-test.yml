@@ -12,8 +12,9 @@ jobs:
           - ubuntu-latest
           - macos-latest
     steps:
-    - run: |
-          exit 1
-    - name: keepalive to debug
-      if: ${{ failure() }}
-      uses: PMET-public/action-tmate@master
+      - uses: actions/checkout@v2
+      - run: |
+            exit 1
+      - name: keepalive to debug
+        if: ${{ failure() }}
+        uses: PMET-public/action-tmate@master
