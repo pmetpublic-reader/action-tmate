@@ -3,7 +3,7 @@
 set -e
 set -x
 
-# install tmate
+# install tmate or grab the pre-compiled linux binary from a docker image
 if [[ "$(uname)" = "Darwin" ]]; then
   brew install tmate
 else
