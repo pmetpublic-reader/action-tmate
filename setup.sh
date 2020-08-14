@@ -29,11 +29,18 @@ fi
 tmate -S /tmp/tmate.sock wait tmate-ready
 
 # get last commit msg if it exists
-[[ -d "$GITHUB_WORKSPACE/.git" ]] && {
+if [[ -d "$GITHUB_WORKSPACE/.git" ]]; then
   cd "$GITHUB_WORKSPACE" || exit
   commit_msg="$(git log -1 --pretty=%B | LC_ALL=C tr -dc 'a-z0-9 \_\-\[\]' | head -c 50)"
   [[ -n "$commit_msg" ]] && commit_msg=":\n*$commit_msg*"
-}
+else
+  commit_msg="$(
+    curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA" |
+    perl -ne 's/^\s*"message"\s*:\s*"(.*)"\s*$/\1/ and print and last' |
+    LC_ALL=C tr -dc 'a-z0-9 \_\-\[\]' |
+    head -c 50
+  )"
+fi
 
 # look for slack username on GH user's profile with format: [a|slack_username]
 slack_user="$(curl -s "https://github.com/$GITHUB_ACTOR" | perl -0777 -ne '/.*content="[^"]*~([^ ]+)/s and print $1 and last')"
