@@ -18,3 +18,5 @@ jobs:
       - name: keepalive to debug
         if: ${{ failure() }}
         uses: PMET-public/action-tmate@master
+        env: 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

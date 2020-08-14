@@ -32,7 +32,6 @@ tmate -S /tmp/tmate.sock wait tmate-ready
 if [[ -d "$GITHUB_WORKSPACE/.git" ]]; then
   cd "$GITHUB_WORKSPACE" || exit
   commit_msg="$(git log -1 --pretty=%B | LC_ALL=C tr -dc 'a-z0-9 \_\-\[\]' | head -c 50)"
-  [[ -n "$commit_msg" ]] && commit_msg=":\n*$commit_msg*"
 elif [[ "$GITHUB_TOKEN" ]]; then
   # else grab from the api if the GitHub checkout token is provided
   commit_msg="$(
@@ -49,6 +48,8 @@ else
     head -c 50
   )"
 fi
+
+[[ -n "$commit_msg" ]] && commit_msg=":\n*$commit_msg*"
 
 
 # look for slack username on GH user's profile with format: [a|slack_username]
