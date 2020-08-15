@@ -15,8 +15,8 @@ jobs:
       # - uses: actions/checkout@v2
       - run: |
             exit 1
-      - name: keepalive to debug
+      - name: keep alive to debug
         if: ${{ failure() }}
         uses: PMET-public/action-tmate@master
-        env: 
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # env: # for private repos if not checked out (unusual)
+        #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
