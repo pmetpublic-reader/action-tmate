@@ -18,5 +18,3 @@ jobs:
       - name: keep alive to debug
         if: ${{ failure() }}
         uses: PMET-public/action-tmate@master
-        # env: # for private repos if not checked out (unusual)
-        #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
